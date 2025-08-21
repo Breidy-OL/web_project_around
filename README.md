@@ -1,11 +1,10 @@
 # Tripleten web_project_around
 
-Proyecto 9: Alrededor de los EE.UU
+Proyecto 10: Alrededor de los EE.UU
 
 En esta ocación estamos creando una red social para compartir momentos inolvidables.
 
 Características del proyecto
-
 
 HTML5 semántico
 Flexbox

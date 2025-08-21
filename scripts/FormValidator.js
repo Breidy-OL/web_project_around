@@ -1,114 +1,67 @@
-// scripts/FormValidator.js
-
-class FormValidator {
-  // 3 - Definición de propiedades o atributos
-  constructor(config, formElement) {
-    this._formElement = formElement;
-    this._inputSelector = config.inputSelector;
-    this._submitButtonSelector = config.submitButtonSelector;
-    this._inactiveButtonClass = config.inactiveButtonClass;
-    this._inputErrorClass = config.inputErrorClass;
-    this._errorClass = config.errorClass;
-
-    this._inputList = Array.from(
-      this._formElement.querySelectorAll(this._inputSelector)
-    );
-    this._buttonElement = this._formElement.querySelector(
-      this._submitButtonSelector
-    );
+export class FormValidator {
+  constructor(config) {
+    //Config is the 'template' and formElement is any form to select
+    this.config = config;
   }
 
-  // 4 - Definir de métodos o funciones
+  _showError = (input) => {
+    const errorElement = document.querySelector(`#${input.id}-error`); //Template literal selects a dynamic ID linked to span
+    errorElement.textContent = input.validationMessage;
+    errorElement.classList.add(this.config.errorClass); //errorClass is a property from the 'config' obj
+  };
 
-  // Método privado para mostrar el mensaje de error
-  _showInputError(inputElement, errorMessage) {
-    const errorElement = this._formElement.querySelector(
-      `.${inputElement.id}-error`
-    );
-    inputElement.classList.add(this._inputErrorClass);
-    errorElement.textContent = errorMessage;
-    errorElement.classList.add(this._errorClass);
-  }
+  _hideError = (input) => {
+    const errorElement = document.querySelector(`#${input.id}-error`); //Template literal selects a dynamic ID linked to span
+    errorElement.textContent = ""; //Empty string to reset the validationMessage set by default
+    errorElement.classList.remove(this.config.errorClass);
+  };
 
-  // Método privado para ocultar el mensaje de error
-  _hideInputError(inputElement) {
-    const errorElement = this._formElement.querySelector(
-      `.${inputElement.id}-error`
-    );
-    inputElement.classList.remove(this._inputErrorClass);
-    errorElement.classList.remove(this._errorClass);
-    errorElement.textContent = ""; // Limpiar el mensaje de error
-  }
-
-  // Método privado para verificar la validez de un input
-  _checkInputValidity(inputElement) {
-    if (!inputElement.validity.valid) {
-      this._showInputError(inputElement, inputElement.validationMessage);
+  _checkInputValidity = (input) => {
+    if (input.validity.valid) {
+      this._hideError(input);
+      input.classList.remove(this.config.inputErrorClass);
     } else {
-      this._hideInputError(inputElement);
+      this._showError(input);
+      input.classList.add(this.config.inputErrorClass);
     }
-  }
+  };
 
-  // Método privado para verificar si hay algún input inválido en el formulario
-  _hasInvalidInput() {
-    return this._inputList.some((inputElement) => {
-      return !inputElement.validity.valid;
-    });
-  }
+  _toggleButtonState = (formElement, button) => {
+    const inputs = Array.from(
+      formElement.querySelectorAll(this.config.inputSelector)
+    ); //Array allow us to verify each input
+    const isValid = inputs.every((input) => input.validity.valid); //Checks if all inputs are valid
 
-  // Método privado para alternar el estado del botón de envío
-  _toggleButtonState() {
-    if (this._hasInvalidInput()) {
-      this._buttonElement.classList.add(this._inactiveButtonClass);
-      this._buttonElement.disabled = true; // Deshabilitar el botón
+    if (isValid) {
+      button.disabled = false; //Enables the button
+      button.classList.remove(this.config.inactiveButtonClass); //Removes the class that disables the button
     } else {
-      this._buttonElement.classList.remove(this._inactiveButtonClass);
-      this._buttonElement.disabled = false; // Habilitar el botón
+      button.disabled = true; //Disables the button
+      button.classList.add(this.config.inactiveButtonClass); //Adds the class that disables the button
     }
-  }
+  };
 
-  // Método privado para añadir listeners a los inputs
-  _setEventListeners() {
-    this._toggleButtonState(); // Establecer el estado inicial del botón
+  _setEventListeners = (formElement) => {
+    const inputs = formElement.querySelectorAll(this.config.inputSelector); //When I select that, a NodeList is created
+    const button = formElement.querySelector(this.config.submitButtonSelector);
+    this._toggleButtonState(formElement, button);
 
-    this._inputList.forEach((inputElement) => {
-      inputElement.addEventListener("input", () => {
-        this._checkInputValidity(inputElement);
-        this._toggleButtonState();
+    inputs.forEach((input) => {
+      input.addEventListener("input", () => {
+        //Input is the event that appears when the user writes in a input
+        this._checkInputValidity(input);
+        this._toggleButtonState(formElement, button);
       });
     });
-
-    // Se mantiene el listener para 'submit' aquí si el FormValidator es el único que previene el submit.
-    // Si el formulario ya se maneja en otro lugar que llama a .preventDefault(), este podría eliminarse.
-    this._formElement.addEventListener("submit", () => {
-      // Retrasar el reinicio del estado de validación para permitir que el envío se procese
-      setTimeout(() => {
-        this._toggleButtonState(); // Reinicia el estado del botón después del envío
-      }, 0);
+    formElement.addEventListener("submit", (evt) => {
+      evt.preventDefault();
     });
+  };
 
-    // Se elimina el listener 'reset' aquí y se reemplaza con el método público resetValidation
-  }
-
-  // Nuevo método público para resetear la validación del formulario
-  resetValidation() {
-    this._inputList.forEach((inputElement) => {
-      this._hideInputError(inputElement); // Limpia los mensajes de error
+  _enableValidation = () => {
+    const forms = document.querySelectorAll(this.config.formSelector); //Access to the form template
+    forms.forEach((form) => {
+      this._setEventListeners(form);
     });
-    this._toggleButtonState(); // Asegura que el botón se deshabilite si es necesario
-  }
-
-  // Método público para habilitar la validación del formulario
-  enableValidation() {
-    this._formElement.addEventListener("submit", (evt) => {
-      evt.preventDefault(); // Asegura que el formulario no se envíe por defecto
-    });
-    this._setEventListeners();
-
-    // Asegurarse de que el estado inicial del formulario esté limpio
-    this.resetValidation(); // Usar el nuevo método
-  }
+  };
 }
-
-// Exporta la clase para poder importarla en otros archivos
-export default FormValidator;
