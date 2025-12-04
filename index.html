@@ -1,157 +1,149 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="Javascript responsive project" />
-    <meta name="author" content="Franz breidy Osinaga Luna" />
+    <meta
+      name="description"
+      content="Perfiles Interactivos para publicar fotos de vivencias personales"
+    />
+    <meta name="author" content="Breidy Osinaga Luna" />
     <meta
       name="keywords"
-      content="Javascript, CSS3, HTML5, Responsive design, travelling, pictures, gallery, travel, Europe, Marrakech"
+      content="aroud, tripleten, jacques, cousteau, yosemite"
     />
-    <title>Around the World</title>
+    <link rel="shortcut icon" href="favicon.svg" />
     <link rel="stylesheet" href="./pages/index.css" />
+    <title>Around the U.S.</title>
   </head>
-  <body class="page">
-    <div class="popup popup-edit-profile">
-      <!-- Popup para editar perfil -->
-      <div class="popup-container">
-        <button class="popup__button-close-profile"></button>
-        <form class="form">
-          <h2 class="form__title">Editar perfil</h2>
-          <label for="name"></label>
-          <input
-            type="text"
-            class="form__input form__input-type-name"
-            placeholder="Nombre"
-            id="name"
-            minlength="2"
-            maxlength="200"
-            required
-          />
-          <span id="name-error" class="popup__error-visible"></span>
-          <label for="about"></label>
-          <input
-            type="text"
-            class="form__input form__input-type-about"
-            placeholder="Acerca de mí"
-            id="about"
-            minlength="2"
-            maxlength="200"
-            required
-          />
-          <span id="about-error" class="popup__error_visible"></span>
-          <button disabled type="submit" class="form__button-save">
-            Guardar
+  <body>
+    <div class="page">
+      <div class="popup" id="openImagePopup">
+        <div
+          class="popup__container popup__container_image"
+          id="imagePopupContainer"
+        >
+          <button class="popup__button popup__button_close" type="button">
+            &#x2715;
           </button>
-        </form>
-      </div>
-    </div>
-    <div class="popup popup-add-place">
-      <div class="popup__container">
-        <button class="popup__button-close popup__button-close-place"></button>
-        <form class="form form__add">
-          <h2 class="form__title form__title-place">Nuevo lugar</h2>
-          <label for="place"></label>
-          <input
-            type="text"
-            class="form__input form__input-place"
-            id="place"
-            placeholder="Título"
-            minlength="2"
-            maxlength="40"
-            required
-          />
-          <span id="place-error" class="popup-error_visible"></span>
-          <label for="link"></label>
-          <input
-            type="url"
-            class="form__input form__input-link"
-            id="link"
-            placeholder="Enlace a la imagen"
-            minlength="2"
-            maxlength="200"
-            required
-          />
-          <span id="link-error" class="popup__error-visible"></span>
-          <button type="submit" class="form__button-save" disabled>
-            Crear
-          </button>
-        </form>
-      </div>
-    </div>
-    <!-- Fin del popup para añadir una nueva card -->
-    <header class="header">
-      <img
-        src="images/around.svg"
-        class="header__logo"
-        alt="Around the world logo"
-      />
-    </header>
-    <main class="main">
-      <section class="main-bar">
-        <img
-          src="images/Jacques.png"
-          alt="explorer picture"
-          class="main-bar__image"
-        />
-        <div class="main-bar__container">
-          <div class="main-bar__text">
-            <h2 class="main-bar__title">Jacques Cousteau</h2>
-            <p class="main-bar__paragraph">Explorador</p>
-          </div>
-          <button class="main-bar__button main-bar__button-type-form">
-            <img src="images/Edit Button.png" alt="button-icon" />
-          </button>
+          <img class="popup__image" src="#" alt="" />
+          <h3 class="popup__image-title"></h3>
         </div>
-        <button class="main-bar__button main-bar__button-type-add">
-          <img src="images/add-button.svg" alt="add-button" />
-        </button>
-      </section>
-    </main>
-    <template id="card__template">
-      <div class="card__item">
-        <img class="card__image" src="" alt="" />
-        <button class="card__trash-button">
-          <img src="./images/Trash.svg" alt="card__icon-trash" />
-        </button>
-        <div class="card__container-text">
-          <p class="card__image-text"></p>
-          <button class="card__like-button">
-            <svg
-              class="heart-icon"
-              width="21"
-              height="19"
-              viewBox="0 0 21 19"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="M19.3764 9.78586C21.5412 7.54338 21.5412 3.90213 19.3764 1.68186C17.2115 -0.560619 13.6964 -0.560619 11.5315 1.68186L10.4812 2.792L9.43098 1.70406C7.26614 -0.560619 3.75096 -0.560619 1.60755 1.68186C0.557285 2.76979 0 4.21297 0 5.74496C0 7.27695 0.578719 8.72013 1.60755 9.80806L10.4812 19L19.3764 9.78586Z"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="1.5"
+      </div>
+      <div class="popup" id="editProfilePopup">
+        <form class="popup__container" id="formEdit" novalidate>
+          <button class="popup__button popup__button_close" type="button">
+            &#x2715;
+          </button>
+          <h2 class="popup__subtitle">Editar Perfil</h2>
+          <fieldset class="popup__content">
+            <label class="popup__field">
+              <input
+                type="text"
+                class="popup__input popup__input-name"
+                placeholder="Nombre"
+                minlength="2"
+                maxlength="40"
+                id="name-input"
+                required
               />
-            </svg>
+              <span class="popup__input-error name-input-error"></span>
+            </label>
+            <label class="popup__field">
+              <input
+                type="text"
+                class="popup__input popup__input-about"
+                placeholder="Acerca de mi"
+                minlength="2"
+                maxlength="200"
+                id="about-input"
+                required
+              />
+              <span class="popup__input-error about-input-error"></span>
+            </label>
+            <button type="submit" class="popup__button popup__button_save">
+              Guardar
+            </button>
+          </fieldset>
+        </form>
+      </div>
+      <div class="popup" id="addImagePopup">
+        <form class="popup__container" id="formAddImage" novalidate>
+          <button class="popup__button popup__button_close" type="button">
+            &#x2715;
           </button>
+          <h2 class="popup__subtitle">Nuevo Lugar</h2>
+          <fieldset class="popup__content">
+            <label class="popup__field">
+              <input
+                type="text"
+                class="popup__input popup__input-image-name"
+                placeholder="Titulo"
+                minlength="2"
+                maxlength="40"
+                id="image-name-input"
+                required
+              />
+              <span class="popup__input-error image-name-input-error"></span>
+            </label>
+            <label class="popup__field">
+              <input
+                type="url"
+                class="popup__input popup__input-image-url"
+                placeholder="Enlace a la imagen"
+                minlength="2"
+                id="add-image-input"
+                required
+              />
+              <span class="popup__input-error add-image-input-error"></span>
+            </label>
+            <button type="submit" class="popup__button popup__button_create">
+              Crear
+            </button>
+          </fieldset>
+        </form>
+      </div>
+      <header>
+        <img
+          src="./images/around.svg"
+          alt="Around the U.S. logo"
+          class="header"
+        />
+      </header>
+      <main>
+        <div class="profile">
+          <div class="profile__image-container">
+            <img
+              class="profile__image"
+              src="./images/Jacques.png"
+              alt="Around the U.S. logo"
+            />
+          </div>
+          <div class="profile__info-container">
+            <p class="profile__name">Jacques Cousteau</p>
+            <p class="profile__job">Explorer</p>
+            <button class="profile__button profile__button-edit" type="button">
+              🖋
+            </button>
+          </div>
+          <button class="profile__button profile__button-add">+</button>
         </div>
-      </div>
-    </template>
-    <section class="cards"></section>
-    <!--Aquí es donde se muestran las nuevas cards con la función de renderCards-->
-    <footer class="footer">
-      <p class="footer__paragraph">&copy; 2025 Around the World</p>
-    </footer>
-    <div class="popup popup-image">
-      <button class="popup__button-close popup__button-close-image"></button>
-      <div class="popup-image__content">
-        <img src="" alt="Imagen ampliada" class="popup-image__img" />
-      </div>
-      <p class="popup-image__caption"></p>
-      <!--Texto dinámico-->
+        <section class="places">
+          <ul class="places__grid"></ul>
+        </section>
+      </main>
+      <template id="main__card-template">
+        <li class="places__card">
+          <button class="places__card-delete-button" type="button"></button>
+          <img src="#" alt="" class="places__card-image" />
+          <div class="places__card-info">
+            <h2 class="places__card-title"></h2>
+            <button class="places__card-like-button" type="button"></button>
+          </div>
+        </li>
+      </template>
+      <p class="footer">&copy; 2025 Around the U.S.</p>
     </div>
-    <script src="./scripts/FormValidator.js" type="module"></script>
-    <script src="./scripts/cards.js" type="module"></script>
-    <script src="./scripts/index.js" type="module"></script>
-    <script src="./scripts/utils.js" type="module"></script>
+    <script type="module" src="./components/index.js"></script>
   </body>
 </html>
