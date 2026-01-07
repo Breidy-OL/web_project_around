@@ -1,34 +1,37 @@
-export default class Popup {
-  constructor(popupSelector) {
-    this._popupElement = document.querySelector(popupSelector);
-    this._handleEscClose = this._handleEscClose.bind(this);
+export class Popup {
+  constructor(container) {
+    this.container = container;
+    this.closeButton = container.querySelectorAll(".popup__button-close");
   }
-
   open() {
-    this._popupElement.classList.add("active");
-    document.addEventListener("keydown", this._handleEscClose);
+    this.container.classList.add("popup_opened");
   }
-
   close() {
-    this._popupElement.classList.remove("active");
-    document.removeEventListener("keydown", this._handleEscClose);
+    this.container.classList.remove("popup_opened");
   }
 
+  // Closes the popup ONLY when Escape is pressed
   _handleEscClose(evt) {
     if (evt.key === "Escape") {
-      this.close();
+      this.close(evt);
     }
   }
 
+  //Closes when you click in the overlay or the close button
   setEventListeners() {
-    this._popupElement
-      .querySelector(".popup__button_close")
-      .addEventListener("click", () => {
+    document.addEventListener("keydown", (evt) => {
+      // Listens for Escape key
+      this._handleEscClose(evt);
+    });
+    this.closeButton.forEach((button) => {
+      button.addEventListener("click", () => {
+        //Listens for click on close button
         this.close();
       });
-
-    this._popupElement.addEventListener("mousedown", (evt) => {
-      if (evt.target === this._popupElement) {
+    });
+    this.container.addEventListener("click", (evt) => {
+      if (evt.target === this.container) {
+        //Listens for click on overlay
         this.close();
       }
     });

@@ -1,59 +1,86 @@
-export default class Card {
-  constructor(data, cardSelector, handleCardClick) {
-    this._name = data.name;
-    this._link = data.link;
-    this._cardSelector = cardSelector;
-    this._handleCardClick = handleCardClick;
+import { api } from "./api.js"; //importing the api class to use its methods inside the Card class
+import { deleteCardPopup } from "../scripts/index.js"; //importing the deleteCardPopup instance to use its open method inside the Card class
+
+export class Card {
+  constructor(cardData, cardTemplate, handleCardClick) {
+    //Third parameter as a function to open the image popup
+    this.cardData = cardData;
+    this.cardTemplate = cardTemplate; //where you insert the card data
+    this.card = null; //This means this is still not defined. This indicates a value, not a string. Thats's why we don't put an empty string "" instead.
+    this.handleCardClick = handleCardClick; //a function to handle the card click event
+    //This means this.card exists but its value its yet not defined, Will be defined when the template is cloned.
   }
 
-  _getTemplate() {
-    const cardElement = document
-      .querySelector(this._cardSelector)
-      .content.querySelector(".places__card")
-      .cloneNode(true);
+  //Methods
+  _renderCard() {
+    this.card = this._getDataTemplate();
+    return this.card;
+  }
 
-    return cardElement;
+  _cloneTemplate() {
+    //1
+    return this.cardTemplate.cloneNode(true);
+  }
+
+  _getDataTemplate() {
+    //this method gets the data from the card object and inserts it into the template
+    //2
+    this.card = this._cloneTemplate(); //this represents the cloned template
+    this.card.querySelector(".card__image-text").textContent =
+      this.cardData.name;
+    this.card.querySelector(".card__image").src = this.cardData.link;
+    if (this.cardData.isLiked) {
+      this.card.querySelector(".card__like-button").classList.add("active"); //If the card is liked, we add the active class to the like button
+    } //This is to match the server data when the card is created
+    this._setEventListeners();
+    return this.card;
   }
 
   _setEventListeners() {
-    this._likeButton.addEventListener("click", () => {
-      this._handleLikeClick();
+    const deleteButton = this.card.querySelector(".card__trash-button"); //When you clone the template you save that node in this.card, so now all access comes from this.card
+    const likeButton = this.card.querySelector(".card__like-button"); //constructor
+    const image = this.card.querySelector(".card__image");
+    const deleteCardButton = this.card.querySelector(".card__trash-button");
+    const cardItem = this.card.querySelector(".card__item");
+    //LIKE BUTTON LISTENER
+    likeButton.addEventListener("click", () => {
+      if (this.cardData.isLiked) {
+        //take the card object and go right into its isLiked property
+        console.log(this.cardData, "---> cardData inside Card.js");
+        api.unlikeTheCard(this.cardData._id).then(() => {
+          likeButton.classList.remove("active");
+          this.cardData.isLiked = false; //updating your local copy of the data to match what the server just did.
+        });
+      } else {
+        api.likeTheCard(this.cardData._id).then(() => {
+          likeButton.classList.add("active");
+          this.cardData.isLiked = true; //now the local server matches the updated server state
+        });
+      }
     });
-
-    this._deleteButton.addEventListener("click", () => {
-      this._handleDeleteClick();
+    //1
+    console.log(this.card, "This.card 1");
+    //DELETE BUTTON LISTENER
+    deleteCardButton.addEventListener("click", () => {
+      //2
+      console.log(this.card, "this.card 2");
+      deleteCardPopup.open(this.cardData._id, cardItem);
     });
-
-    this._cardImage.addEventListener("click", () => {
-      this._handleCardClick(this._name, this._link);
+    //OPEN IMAGE POPUP LISTENER
+    image.addEventListener("click", () => {
+      this.handleCardClick(
+        this.cardData.link,
+        this.cardData.name,
+        this.cardData.name
+      ); //Defines the parameters inside to get the values straight from the cardData object
     });
-  }
-
-  _handleLikeClick() {
-    this._likeButton.classList.toggle("places__card-like-button_active"); // Corregido: de main__place-card__like-button_active a places__card-like-button_active
-  }
-
-  _handleDeleteClick() {
-    this._element.remove();
-    this._element = null;
-  }
-
-  generateCard() {
-    this._element = this._getTemplate();
-
-    this._cardImage = this._element.querySelector(".places__card-image");
-    this._cardTitle = this._element.querySelector(".places__card-title");
-    this._likeButton = this._element.querySelector(".places__card-like-button");
-    this._deleteButton = this._element.querySelector(
-      ".places__card-delete-button"
-    );
-
-    this._cardImage.src = this._link;
-    this._cardImage.alt = this._name;
-    this._cardTitle.textContent = this._name;
-
-    this._setEventListeners();
-
-    return this._element;
+    //Pretty much as:
+    /* but cardImage here is cardData
+    cardImage.setEventListeners("click", () => {
+      const src = cardImage.src;
+      const altText = cardImage.alt;
+      const captionText = cardImage.textContent.caption;
+      imagePopup.open(src, altText, captionText);
+    });*/
   }
 }

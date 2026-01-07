@@ -1,6 +1,6 @@
-# Tripleten web_project_around
+# Tripleten web_project_around_12
 
-Proyecto 10: Alrededor de los EE.UU
+Proyecto 12: Alrededor de los EE.UU
 
 En esta ocación estamos creando una red social para compartir momentos inolvidables.
 
@@ -34,3 +34,5 @@ En un futuro se agregaran mas features como agregar mas fotos y darle like, junt
 -Implementación Back-end
 
 El cielo es el Límite !!
+
+git@github.com:Breidy-OL/web_project_around.git
